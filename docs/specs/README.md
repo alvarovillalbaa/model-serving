@@ -1,27 +1,50 @@
-# model-inference specification
+# Model serving specification
 
 Last updated: 2026-11-10
 
-Status: planned. All runtime capabilities below remain planned.
+Status: planned. These target operations are not implemented commands or APIs.
 
-## Responsibility
+## Consumer and target interface
 
-Inference adapters, model endpoint bindings, request workloads, latency/throughput measurements, and export compatibility.
+A user supplies a permitted model artifact from any compatible producer.
+Neither model-pretraining, model-posttraining, Lab, nor a benchmark package is a
+required consumer dependency.
 
-## First next work
+- A launch request identifies weights/config/tokenizer and optional adapter
+  artifacts with formats/hashes; selects one runtime adapter; supplies resource
+  and request limits; and references credentials through external configuration.
+- Launch returns a server identity and endpoint binding: protocol, address,
+  declared model/runtime identity, supported request capabilities and lifecycle
+  status. Declared remote identity is not immutable-deployment proof.
+- Status and stop operate on that explicit server identity. Requests return
+  actual outputs/errors and observable timing/token/usage information when
+  available. Unknown measurements remain absent or explicitly unknown.
+- The first implemented protocol should support a documented local
+  OpenAI-compatible chat request/response path. Additional runtimes are optional
+  declared adapters, not hidden setup side effects.
 
-- [ ] Add one local inference adapter with a documented model input and output interface.
-- [ ] Record model revision, workload, hardware, timing, memory, and cost coverage.
-- [ ] Connect measurements to Open Evals without duplicating its evaluator engine.
+## Prerequisites and scope
 
-## Interfaces and composition
+First select one compatible model format and local runtime, provide its model
+artifact and an explicit resource cap, and document installation independently.
+The original export candidates include safetensors, compatible checkpoint
+layouts, GGUF and adapter formats; no adapter claims support before tested.
 
-Specify the smallest public API against the first real consumer before implementing it. Use explicit inputs, artifacts, versions, and dependency declarations. A planned interface is not an implementation.
-
-[Inherited blueprint](blueprint.md) preserves the relevant original design sections. Provider claims, dates, estimates, and unimplemented features there are historical requirements, not new measurements.
-
-[Inherited backlog](backlog.md) records the original planning status; use the implementation status above for the current boundary.
+Public endpoints need the owner's deployment, access, safety and budget gates.
+Local serving does not authorize public exposure. No provider is contacted by
+this planned repository.
 
 ## Acceptance
 
-The first implementation must install/run independently, declare dependencies, include a useful example and focused behavior checks, and record remaining limitations. Do not mark this project implemented solely because the documentation exists.
+A first implementation must load an external compatible model, launch/status/
+stop its local endpoint, preserve artifact/runtime identities, handle request
+errors and resource bounds, and return a useful actual response without a
+benchmark harness. Test reload and cancellation/teardown with recorded evidence.
+
+This owner emits raw telemetry. Inference-benchmarks owns measurement protocols,
+load generation, percentiles, throughput/cost aggregation and comparisons.
+Evaluation quality/safety scoring belongs to Open Evals or another explicit
+consumer, not a second serving-owned evaluation engine.
+
+[Blueprint](blueprint.md) · [Backlog](backlog.md) ·
+[Source history](../sources/README.md)

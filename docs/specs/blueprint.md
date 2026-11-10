@@ -1,64 +1,32 @@
-# Inherited model-inference blueprint
+# Serving implementation blueprint
 
 Last updated: 2026-11-10
 
-Historical design extracted from [Lab at ba67e51](https://github.com/alvarovillalbaa/lab/blob/ba67e510bab2703b1042993744ce099490221c1f/docs/specs/steps.md). The component specification owns current scope. This text does not prove implementation, current provider facts, or executed research.
+Status: planned. The exact former mixed serving/measurement design is preserved
+in [the pre-expansion snapshot](../sources/pre-expansion/blueprint.md).
 
-# 17. Phase 13 — serving
+## Model artifact compatibility
 
-Serving is part of the experiment, not an afterthought.
+Accept model/config/tokenizer references and explicit format support. A model
+exported by either training product is one possible input, not a prerequisite.
+Adapters that need base weights must state that requirement. Validate bindings
+before starting a runtime; do not imply all original export candidates work.
 
-## 17.1 Export formats
+## One local runtime first
 
-Produce:
+Implement one local runtime adapter and one documented request protocol.
+Separate configuration/launch, lifecycle status, bounded request handling and
+stop/teardown. Preserve model/runtime/code identity and observable request
+telemetry. No public endpoint or cloud allocation is implicit.
 
-```text
-HF safetensors
-vLLM-compatible checkpoint
-SGLang-compatible checkpoint
-GGUF quantized model
-LoRA/adapters if used
-```
+## Consumer boundaries
 
-llama.cpp is useful for local demos because it targets minimal setup across local/cloud hardware and supports many quantization levels. ([GitHub][17])
+A chat UI is an optional endpoint client. Inference-benchmarks can measure this
+endpoint through the same public binding it uses for externally operated
+endpoints. It owns workload concurrency, metric aggregation and comparisons;
+serving owns request execution and emitted observations.
 
-## 17.2 vLLM deployment
-
-Deploy:
-
-```text
-base model endpoint
-sft model endpoint
-dpo/rl model endpoint
-distilled model endpoint
-quantized model endpoint
-```
-
-Measure:
-
-| Metric                         | Required |
-| ------------------------------ | -------- |
-| p50/p95 time-to-first-token    | yes      |
-| output tokens/sec              | yes      |
-| max concurrent users           | yes      |
-| GPU memory                     | yes      |
-| cost per 1M input tokens       | yes      |
-| cost per 1M output tokens      | yes      |
-| quality loss from quantization | yes      |
-
-vLLM is the right default because it supports high-throughput serving, OpenAI-compatible APIs, many quantization modes, parallelism, prefix caching, structured outputs, tool calling, and many Hugging Face architectures. ([vLLM][8])
-
-## 17.3 Public demo
-
-Create:
-
-* simple chat UI
-* `/v1/chat/completions` endpoint
-* model card
-* eval dashboard
-* cost dashboard
-* “compare base vs post-trained vs distilled” mode
-
-This proves you can serve the model, not just train it.
-
----
+The original design's p50/p95 latency, token throughput, memory, cost and
+quantization-comparison requirements now belong to
+[inference-benchmarks](https://github.com/alvarovillalbaa/inference-benchmarks).
+Quality/safety evaluation remains an external evaluation consumer.
