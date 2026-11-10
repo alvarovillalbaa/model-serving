@@ -1,17 +1,18 @@
-# Inherited backlog
+# Serving backlog
 
 Last updated: 2026-11-10
 
-Original status from [Lab](https://github.com/alvarovillalbaa/lab/blob/ba67e510bab2703b1042993744ce099490221c1f/docs/IMPLEMENTATION_BACKLOG.md), retained as planning provenance. Current implemented scope is in this repository's README.
+All runtime capabilities remain planned. The
+[original mixed backlog](../sources/pre-expansion/backlog.md) is historical.
 
-## Serving
+- [ ] Choose one model format, local runtime and documented request protocol.
+- [ ] Validate weights/config/tokenizer/adapter bindings with content identities.
+- [ ] Implement launch, status, stop and resource-bounded request handling.
+- [ ] Return useful actual model output and explicit execution failures.
+- [ ] Emit raw timing/token/usage observations with unknown fields preserved.
+- [ ] Prove independent loading, local endpoint use, reload and teardown.
+- [ ] Add optional cloud/public adapters only after access, safety and budget gates.
 
-Status: planned.
-
-- [ ] Local vLLM wrapper.
-- [ ] Baseten deployment folder.
-- [ ] OpenAI-compatible chat endpoint.
-- [ ] Safety gateway.
-- [ ] Latency logging.
-- [ ] Cost logging.
-- [ ] Base vs post-trained vs distilled comparison mode.
+Workload generation, concurrency sweeps, performance statistics and comparative
+reports are maintained in
+[inference-benchmarks](https://github.com/alvarovillalbaa/inference-benchmarks).
