@@ -1,5 +1,9 @@
 # model-inference
 
+<!-- project-family:start -->
+> **Project family:** [AI Research Lab](https://github.com/alvarovillalbaa#ai-research-lab) · **Area:** Model serving
+<!-- project-family:end -->
+
 Last updated: 2026-11-10
 
 Serve explicit model artifacts and measure inference behavior through documented workloads.
